@@ -4,10 +4,9 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/alexdlaird/pyhearth/build.yml)](https://github.com/alexdlaird/pyhearth/actions/workflows/build.yml)
 [![GitHub License](https://img.shields.io/github/license/alexdlaird/pyhearth)](https://github.com/alexdlaird/pyhearth/blob/main/LICENSE)
 
-`pyhearth` is a Python client for [Hearth](https://www.meethearth.app)'s home API. It posts room sensor readings, and
-optionally a thermostat, to a Hearth home with the home's API key, and returns the thermostat setting Hearth answers
-with. It's what [`ha-hearth`](https://github.com/alexdlaird/ha-hearth), Hearth's Home Assistant integration, uses to
-talk to Hearth.
+`pyhearth` is a Python client for [Hearth](https://www.meethearth.app)'s home API. It posts thermostate and/or room
+sensor readings to a Hearth home with the home's API key, and returns the thermostat setting Hearth answers with.
+It's what [`ha-hearth`](https://github.com/alexdlaird/ha-hearth), Hearth's Home Assistant integration, uses to talk to Hearth.
 
 ## Installation
 
