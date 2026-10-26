@@ -6,6 +6,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased](https://github.com/alexdlaird/pyhearth/compare/1.0.0...HEAD)
 
+### Added
+
+- Support for Python 3.15.
+
+### Removed
+
+- Support for Python 3.10.
+
 ## [1.0.0](https://github.com/alexdlaird/pyhearth/compare/0.0.0...1.0.0) - 2026-10-26
 
 ### Added
