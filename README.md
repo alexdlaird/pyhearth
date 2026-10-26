@@ -1,3 +1,5 @@
+<p align="center"><img alt="pyhearth - A Python client for Hearth's home API" src="https://raw.githubusercontent.com/alexdlaird/pyhearth/main/docs/logo.png" /></p>
+
 [![Version](https://img.shields.io/pypi/v/pyhearth)](https://pypi.org/project/pyhearth)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyhearth.svg)](https://pypi.org/project/pyhearth)
 [![Coverage](https://img.shields.io/codecov/c/github/alexdlaird/pyhearth)](https://codecov.io/gh/alexdlaird/pyhearth)
