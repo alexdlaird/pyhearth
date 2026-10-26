@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyhearth/compare/1.0.2...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyhearth/compare/1.1.0...HEAD)
+
+## [1.1.0](https://github.com/alexdlaird/pyhearth/compare/1.0.2...1.1.0) - 2026-10-26
+
+### Added
+
+- A `User-Agent` on every post (`pyhearth/<version>`, then the caller's own product, given as `agent`), so Hearth's
+  logs say what posted it.
+- `HearthClient.home_id` and `check_key()`'s return value: the home the key belongs to, as Hearth names it in
+  its `Hearth-Home` header (the same whatever the home's key).
 
 ## [1.0.2](https://github.com/alexdlaird/pyhearth/compare/1.0.1...1.0.2) - 2026-10-26
 
