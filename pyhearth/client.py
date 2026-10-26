@@ -7,6 +7,7 @@ from typing import Any, Final
 
 import aiohttp
 
+from pyhearth import __version__
 from pyhearth.exception import (
     HearthAuthError,
     HearthConnectionError,
@@ -19,6 +20,9 @@ from pyhearth.exception import (
 DEFAULT_API_URL: Final = "https://api.meethearth.app"
 #: The version of the bridge protocol Hearth's ``/v1/bridge`` endpoint speaks.
 PROTOCOL: Final = 1
+#: The header Hearth names the home in: the same id whatever the home's key, so a new key for the same home can be told
+#: from a key for another one.
+HOME_HEADER: Final = "Hearth-Home"
 #: How long one request to Hearth may take, in seconds.
 REQUEST_TIMEOUT: Final = 15
 #: How many seconds to wait when Hearth asks to slow down without saying for how long.
@@ -47,7 +51,8 @@ class HearthClient:
                  base_url: str = DEFAULT_API_URL,
                  *,
                  source: str | None = None,
-                 source_name: str | None = None) -> None:
+                 source_name: str | None = None,
+                 agent: str | None = None) -> None:
         self._session = session
         self._api_key = api_key
 
@@ -58,14 +63,21 @@ class HearthClient:
         self.source: str | None = source
         #: How the Hearth app names the source, if given.
         self.source_name: str | None = source_name
+        #: The ``User-Agent`` every post sends, so Hearth's logs say what posted it: this package, then the caller's
+        #: own product (e.g. ``ha-hearth/1.1.0``) when given.
+        self.user_agent: str = f"pyhearth/{__version__}" + (f" {agent}" if agent else "")
+        #: The home the key belongs to, as Hearth last named it (``None`` until Hearth has answered).
+        self.home_id: str | None = None
 
-    async def check_key(self) -> None:
+    async def check_key(self) -> str | None:
         """
         Check that Hearth takes the API key, with an empty readings post (which changes nothing).
 
+        :return: The home the key belongs to, the same whatever its key (``None`` if Hearth didn't say).
         :raises: :class:`~pyhearth.exception.HearthError`: When Hearth doesn't take the key or can't be reached.
         """
         await self._post("/v1/readings", self._readings_payload([], named=False))
+        return self.home_id
 
     async def sync_thermostat(self,
                               thermostat: dict[str, Any],
@@ -112,14 +124,18 @@ class HearthClient:
         try:
             async with self._session.post(f"{self.base_url}{path}",
                                           json=payload,
-                                          headers={"Authorization": f"Bearer {self._api_key}"},
+                                          headers={"Authorization": f"Bearer {self._api_key}",
+                                                   "User-Agent": self.user_agent},
                                           timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT)) as response:
                 text = await response.text()
                 status = response.status
                 retry_after = response.headers.get("Retry-After")
+                home_id = response.headers.get(HOME_HEADER)
         except (aiohttp.ClientError, TimeoutError) as e:
             raise HearthConnectionError(f"Couldn't reach Hearth: {e}") from e
 
+        if home_id:
+            self.home_id = home_id
         if status in (200, 204, 422):
             return status, _json(text) if text else None
         elif status == 401:

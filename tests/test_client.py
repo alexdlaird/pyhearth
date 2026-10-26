@@ -3,7 +3,8 @@ __license__ = "MIT"
 
 import json
 
-from pyhearth.client import DEFAULT_RETRY_AFTER, PROTOCOL, HearthClient
+from pyhearth import __version__
+from pyhearth.client import DEFAULT_RETRY_AFTER, HOME_HEADER, PROTOCOL, HearthClient
 from pyhearth.exception import (
     HearthAuthError,
     HearthConnectionError,
@@ -38,6 +39,66 @@ class TestCheckKey(HearthTestCase):
         # WHEN / THEN
         with self.assertRaises(HearthAuthError):
             await client.check_key()
+
+
+class TestUserAgent(HearthTestCase):
+    async def test_posts_name_the_package(self) -> None:
+        # GIVEN
+        client = self.given_client()
+
+        # WHEN
+        await client.check_key()
+
+        # THEN
+        self.assertEqual([f"pyhearth/{__version__}"], self.user_agents)
+
+    async def test_posts_name_the_callers_product_too(self) -> None:
+        # GIVEN
+        client = self.given_client(agent="ha-hearth/1.1.0")
+
+        # WHEN
+        await client.sync_thermostat(THERMOSTAT)
+
+        # THEN
+        self.assertEqual([f"pyhearth/{__version__} ha-hearth/1.1.0"], self.user_agents)
+
+
+class TestHomeId(HearthTestCase):
+    async def test_check_key_names_the_home(self) -> None:
+        # GIVEN
+        self.given_hearth_answers("readings", 204, headers={HOME_HEADER: "home-1"})
+        client = self.given_client()
+
+        # WHEN
+        home_id = await client.check_key()
+
+        # THEN
+        self.assertEqual("home-1", home_id)
+        self.assertEqual("home-1", client.home_id)
+
+    async def test_check_key_without_a_home(self) -> None:
+        # GIVEN
+        client = self.given_client()
+
+        # WHEN
+        home_id = await client.check_key()
+
+        # THEN
+        self.assertIsNone(home_id, "a Hearth that doesn't name the home yet")
+
+    async def test_home_id_kept_from_the_last_answer_that_named_it(self) -> None:
+        # GIVEN
+        self.given_hearth_answers("bridge", 200, json.dumps({"desired": None}), headers={HOME_HEADER: "home-1"})
+        client = self.given_client()
+        await client.sync_thermostat(THERMOSTAT)
+        self.given_hearth_answers("bridge", 503)
+
+        # WHEN
+        with self.assertRaises(HearthConnectionError):
+            await client.sync_thermostat(THERMOSTAT)
+
+        # THEN
+        self.assertEqual("home-1", client.home_id)
 
 
 class TestSyncThermostat(HearthTestCase):

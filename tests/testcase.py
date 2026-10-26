@@ -18,6 +18,7 @@ class HearthTestCase(unittest.IsolatedAsyncioTestCase):
         self.answers: dict[str, tuple[int, str, dict[str, str]]] = {}
         self.posts: dict[str, list[Any]] = {}
         self.authorizations: list[str | None] = []
+        self.user_agents: list[str | None] = []
 
         app = web.Application()
         app.router.add_post("/v1/{endpoint}", self._answer)
@@ -46,5 +47,6 @@ class HearthTestCase(unittest.IsolatedAsyncioTestCase):
         endpoint = request.match_info["endpoint"]
         self.posts.setdefault(endpoint, []).append(await request.json())
         self.authorizations.append(request.headers.get("Authorization"))
+        self.user_agents.append(request.headers.get("User-Agent"))
         status, body, headers = self.answers.get(endpoint, (204, "", {}))
         return web.Response(status=status, text=body, headers=headers)
