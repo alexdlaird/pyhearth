@@ -1,13 +1,13 @@
 [project]
 name = "pyhearth"
 dynamic = ["version"]
-description = "A Python client for Hearth's home API: post a thermostat and room sensor readings to a Hearth home"
+description = "A Python client for Hearth's home API: post thermostat and room sensor readings to a Hearth home"
 readme = "README.md"
 license = "MIT"
 keywords = ["hearth", "thermostat", "climate", "room-sensors", "home-automation", "daikin", "asyncio"]
 authors = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
 maintainers = [{ name = "Alex Laird", email = "contact@alexlaird.com" }]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "aiohttp>=3.9"
 ]
@@ -17,11 +17,11 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Topic :: Home Automation",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
