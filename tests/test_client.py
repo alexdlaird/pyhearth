@@ -161,7 +161,7 @@ class TestSyncThermostat(HearthTestCase):
 class TestPostReadings(HearthTestCase):
     async def test_post_readings(self) -> None:
         # GIVEN
-        self.given_hearth_answers("readings", 200, json.dumps({"not_added": ["sensor.den"]}))
+        self.given_hearth_answers("readings", 200, json.dumps({"not_added": ["home-assistant:sensor%2Eden"]}))
         client = self.given_client(source="home-assistant", source_name="Home Assistant")
 
         # WHEN
@@ -193,6 +193,30 @@ class TestPostReadings(HearthTestCase):
 
         # THEN
         self.assertEqual(["sensor.office", "sensor.den"], result.not_added)
+
+    async def test_post_readings_names_sensors_by_the_ids_posted(self) -> None:
+        # GIVEN
+        self.given_hearth_answers("readings", 200,
+                                  json.dumps({"not_added": ["api:hall%3Aupstairs", "api:100%25%2Ehumid"]}))
+        client = self.given_client()
+
+        # WHEN
+        result = await client.post_readings(READINGS)
+
+        # THEN
+        self.assertEqual(["hall:upstairs", "100%.humid"], result.not_added)
+
+    async def test_post_readings_none_added_leaves_out_sensors_without_temperature(self) -> None:
+        # GIVEN
+        self.given_hearth_answers("readings", 422, json.dumps({"error": "no sensor of this home"}))
+        client = self.given_client()
+
+        # WHEN
+        result = await client.post_readings([*READINGS, {"id": "sensor.hygro", "humidity": 40}])
+
+        # THEN
+        self.assertEqual(["sensor.office", "sensor.den"], result.not_added,
+                         "Hearth can't add a sensor that reports no temperature, so it isn't listed")
 
 
 class TestErrors(HearthTestCase):
