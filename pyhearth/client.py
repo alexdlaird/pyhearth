@@ -107,9 +107,9 @@ class HearthClient:
         """
         status, body = await self._post("/v1/readings", self._readings_payload(sensors, named=True))
         if status == 422:
-            return ReadingsResult([str(sensor["id"]) for sensor in sensors])
+            return ReadingsResult([str(sensor["id"]) for sensor in sensors if sensor.get("temperature") is not None])
         not_added = body.get("not_added") if isinstance(body, dict) else None
-        return ReadingsResult([str(name) for name in not_added] if isinstance(not_added, list) else [])
+        return ReadingsResult([_sensor_id(str(key)) for key in not_added] if isinstance(not_added, list) else [])
 
     def _readings_payload(self, sensors: list[dict[str, Any]], named: bool) -> dict[str, Any]:
         payload: dict[str, Any] = {}
@@ -148,6 +148,13 @@ class HearthClient:
             raise HearthConnectionError(f"Hearth answered {status}.")
         else:
             raise HearthRejectedError(text[:300] or f"Hearth answered {status}.")
+
+
+def _sensor_id(key: str) -> str:
+    _, separator, sensor = key.partition(":")
+    for escaped, raw in (("%2E", "."), ("%3A", ":"), ("%25", "%")):
+        sensor = sensor.replace(escaped, raw)
+    return sensor if separator else key
 
 
 def _json(text: str) -> Any:
