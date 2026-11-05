@@ -17,8 +17,6 @@ labels:
 
           A report is only useful if it can be understood quickly, so please edit this one down to the essentials. If an AI tool helped write it, that's fine, but verify it and trim it yourself first. If you haven't read it in full, it's simply not reasonable to expect us to.
 
-          A bug report is also only actionable with the HTML page that failed to parse attached (sensitive data obfuscated), since a code snippet tells us nothing without the source it ran against.
-
           This issue will be reopened once it is evident it has had a human touch.
         action: close
       pr:
