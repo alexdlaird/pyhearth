@@ -6,9 +6,19 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/alexdlaird/pyhearth/build.yml)](https://github.com/alexdlaird/pyhearth/actions/workflows/build.yml)
 [![GitHub License](https://img.shields.io/github/license/alexdlaird/pyhearth)](https://github.com/alexdlaird/pyhearth/blob/main/LICENSE)
 
-`pyhearth` is a Python client for [Hearth](https://www.meethearth.app)'s home API. It posts thermostate and/or room
+`pyhearth` is a Python client for [Hearth](https://www.meethearth.app)'s home API. It posts thermostat and/or room
 sensor readings to a Hearth home with the home's API key, and returns the thermostat setting Hearth answers with.
 It's what [`ha-hearth`](https://github.com/alexdlaird/ha-hearth), Hearth's Home Assistant integration, uses to talk to Hearth.
+
+<p align="center">
+  <a href="https://apps.apple.com/app/id6816728401"><img src="https://www.meethearth.app/img/app-store-badge.png" alt="Download on the App Store" height="50" /></a>
+  &nbsp;
+  <a href="https://play.google.com/store/apps/details?id=com.alexdlaird.hearth"><img src="https://www.meethearth.app/img/google-play-badge.png" alt="Get it on Google Play" height="50" /></a>
+</p>
+
+<p align="center">
+  <a href="https://www.patreon.com/alexdlaird/membership"><img src="https://www.heliumedu.com/img/support-patreon.png" alt="Support on Patreon" height="30" /></a>
+</p>
 
 ## Installation
 
